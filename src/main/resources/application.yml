@@ -1,0 +1,5 @@
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useSSL=true
+        username: root
+        password: "P@ssword666"
