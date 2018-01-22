@@ -1,4 +1,4 @@
 package com.venti.dao.mapper;
 
-public class BaseMapper {
+public abstract class BaseMapper {
 }
