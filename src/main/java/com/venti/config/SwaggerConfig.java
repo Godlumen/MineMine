@@ -18,7 +18,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.lieh666.mysql"))
+                .apis(RequestHandlerSelectors.basePackage("com.venti"))
                 .paths(PathSelectors.any())
                 .build();
     }
