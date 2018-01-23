@@ -3,31 +3,33 @@ package com.venti.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
 @Configuration
 @Slf4j
+@Data
 public class DruidConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(DruidConfig.class);
-    private static final String DB_PREFIX = "spring.datasource";
+    private static final String DB_PREFIX="spring.datasource";
 
     @Bean
     public ServletRegistrationBean druidServlet() {
-        logger.info("init Druid Servlet Configuration ");
+        log.info("init Druid Servlet Configuration ");
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
         // IP白名单
         servletRegistrationBean.addInitParameter("allow", "192.168.2.25,127.0.0.1");
@@ -43,6 +45,7 @@ public class DruidConfig {
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
+        log.info("Start Filter ");
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
@@ -51,8 +54,6 @@ public class DruidConfig {
 
     //解决 spring.datasource.filters=stat,wall,log4j 无法正常注册进去
     @ConfigurationProperties(prefix = DB_PREFIX)
-    @Getter
-    @Setter
     class IDataSourceProperties {
         private String url;
         private String username;
@@ -60,6 +61,7 @@ public class DruidConfig {
         private String driverClassName;
         private int initialSize;
         private int minIdle;
+        @Value("${spring.datasource.maxActive}")
         private int maxActive;
         private int maxWait;
         private int timeBetweenEvictionRunsMillis;
@@ -99,6 +101,7 @@ public class DruidConfig {
                 datasource.setFilters(filters);
             } catch (SQLException e) {
                 System.err.println("druid configuration initialization filter: " + e);
+                log.error("druid configuration initialization filter:{}", e);
             }
             datasource.setConnectionProperties(connectionProperties);
             return datasource;
