@@ -59,7 +59,7 @@ spring:
     timeout: 0
 
   mail:
-    host: smtp.exmail.163.com
+    host: smtp.163.com
     username: lieh_666@163.com
     password: Xiao163He00
     properties:
