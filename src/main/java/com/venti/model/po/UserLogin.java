@@ -32,7 +32,7 @@ public class UserLogin implements Serializable{
     /** QQ **/
     private String qqId;
     /** 账号状态，“0”未激活、“1”已激活 **/
-    private String status;
+    private Integer status;
     /** 最后登录时间 **/
     private Date lastLoginTime;
     /** 记录最近更新时间 **/
