@@ -22,7 +22,6 @@ import java.sql.SQLException;
 
 @Configuration
 @Slf4j
-@Data
 public class DruidConfig {
 
     private static final String DB_PREFIX="spring.datasource";
@@ -54,6 +53,7 @@ public class DruidConfig {
 
     //解决 spring.datasource.filters=stat,wall,log4j 无法正常注册进去
     @ConfigurationProperties(prefix = DB_PREFIX)
+    @Setter
     class IDataSourceProperties {
         private String url;
         private String username;
@@ -61,7 +61,6 @@ public class DruidConfig {
         private String driverClassName;
         private int initialSize;
         private int minIdle;
-        @Value("${spring.datasource.maxActive}")
         private int maxActive;
         private int maxWait;
         private int timeBetweenEvictionRunsMillis;
