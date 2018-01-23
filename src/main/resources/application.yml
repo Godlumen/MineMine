@@ -59,3 +59,16 @@ spring:
           min-idle: 0
         # 连接超时时间（毫秒）
         timeout: 0
+
+spring:
+  mail:
+    host: smtp.exmail.qq.com
+    username: 用户名
+    password: 密码
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
