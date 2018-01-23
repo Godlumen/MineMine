@@ -1,6 +1,8 @@
 package com.venti.model.po;
 
+import com.venti.enums.UserStatusEnum;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,12 +10,14 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "user_login")
-@Data
+
 /**
  * 用户登录信息表
  */
+@Entity
+@Table(name = "user_login")
+@Data
+@DynamicUpdate
 public class UserLogin implements Serializable{
     private static final long serialVersionUID = -1L;
     @Id
@@ -32,7 +36,7 @@ public class UserLogin implements Serializable{
     /** QQ **/
     private String qqId;
     /** 账号状态，“0”未激活、“1”已激活 **/
-    private String status;
+    private Integer status= UserStatusEnum.INACTIVE.getCode();
     /** 最后登录时间 **/
     private Date lastLoginTime;
     /** 记录最近更新时间 **/
