@@ -1,6 +1,7 @@
 package com.venti.service.impl;
 
 import com.venti.service.IMailService;
+import com.venti.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,5 +128,27 @@ public class MailServiceImpl implements IMailService {
         } catch (MessagingException e) {
             logger.error("发送嵌入静态资源的邮件时发生异常！", e);
         }
+    }
+
+    @Override
+    public void sendverifyMail(String to) {
+        String subject = Mail.VERIFYMAIL_SUBJECT.getValue();
+        String content = Mail.VERIFYMAIL_CONTENT.getValue().replace("TOKEN", TokenUtil.token("123"));
+        sendHtmlMail(to, subject, content);
+    }
+
+}
+
+enum Mail {
+    VERIFYMAIL_SUBJECT("欢迎注册我们的网站"),
+    VERIFYMAIL_CONTENT("");
+
+    private String value;
+    private Mail(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
