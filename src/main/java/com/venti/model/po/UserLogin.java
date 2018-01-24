@@ -2,6 +2,7 @@ package com.venti.model.po;
 
 import com.venti.enums.UserStatusEnum;
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "user_login")
 @Data
+@DynamicInsert
 @DynamicUpdate
 public class UserLogin implements Serializable{
     private static final long serialVersionUID = -1L;
