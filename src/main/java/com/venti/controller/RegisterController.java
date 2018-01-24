@@ -25,7 +25,7 @@ public class RegisterController {
     }
 
     @RequestMapping(value = "/regMob",method = RequestMethod.GET)
-    public ResultVO<String> registerByMobile(@RequestParam("mobile") String mobile,@RequestParam("verifyCode") String verifyCode){
+    public ResultVO registerByMobile(@RequestParam("mobile") String mobile,@RequestParam("verifyCode") String verifyCode){
         log.info("RegisterController--->registerByMobile...");
         return registerService.registerByMobile(mobile,verifyCode);
     }

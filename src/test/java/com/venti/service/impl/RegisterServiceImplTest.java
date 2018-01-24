@@ -18,6 +18,6 @@ public class RegisterServiceImplTest {
     @Test
     @Transactional
     public void registerByMobile() {
-        Assert.assertNotNull(registerService.registerByMobile("18049378259"));
+
     }
 }

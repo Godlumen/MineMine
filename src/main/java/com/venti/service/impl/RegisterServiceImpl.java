@@ -4,6 +4,7 @@ import com.github.qcloudsms.SmsSingleSenderResult;
 import com.venti.constant.SMSConstant;
 import com.venti.dao.repository.RegisterRepository;
 import com.venti.enums.ResultEnum;
+import com.venti.exception.MineMineException;
 import com.venti.model.po.UserLogin;
 import com.venti.model.vo.ResultVO;
 import com.venti.service.RegisterService;
@@ -40,7 +41,7 @@ public class RegisterServiceImpl implements RegisterService {
      */
     @Override
     @Transactional
-    public ResultVO<String> registerByMobile(String mobile,String verifyCode) {
+    public ResultVO registerByMobile(String mobile,String verifyCode) {
 
         String value = stringRedisTemplate.opsForValue().get(mobile);
         //判断Redis中Key是否存在请求的手机号
@@ -56,12 +57,12 @@ public class RegisterServiceImpl implements RegisterService {
             }
             else{
                 log.error("手机号={},验证失败！", mobile);
-                return ResultVOUtil.error(ResultEnum.VERIFY_FAIL);
+                throw new MineMineException(ResultEnum.VERIFY_FAIL);
             }
         }
         else{
             log.error("手机号={},不存在！", mobile);
-            return ResultVOUtil.error(ResultEnum.REDIS_NOT_EXITS);
+            throw new MineMineException(ResultEnum.REDIS_NOT_EXITS);
         }
     }
 
@@ -78,7 +79,7 @@ public class RegisterServiceImpl implements RegisterService {
         //验证手机号是否存在
         if (userLogin != null) {
             log.error("手机号={},已存在！", mobile);
-            return ResultVOUtil.error(ResultEnum.MOBILE_EXITS);
+            throw new MineMineException(ResultEnum.MOBILE_EXITS);
         }
         //若不存在，发送验证短信
         else {
@@ -105,7 +106,7 @@ public class RegisterServiceImpl implements RegisterService {
             //短信验证码发送失败
             else {
                 log.error("向手机号={}发送短信验证码失败！", mobile);
-                return ResultVOUtil.error(ResultEnum.SMS_ERROR);
+                throw new MineMineException(ResultEnum.SMS_ERROR);
             }
         }
     }
