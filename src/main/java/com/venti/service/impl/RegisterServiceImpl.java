@@ -8,7 +8,7 @@ import com.venti.exception.MineMineException;
 import com.venti.model.dto.UserRegisterDTO;
 import com.venti.model.po.UserLogin;
 import com.venti.model.vo.ResultVO;
-import com.venti.service.IMailService;
+import com.venti.service.MailService;
 import com.venti.service.RegisterService;
 import com.venti.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.venti.enums.ResultEnum.*;
+
 
 @Service
 @Slf4j
@@ -33,7 +35,7 @@ public class RegisterServiceImpl implements RegisterService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private IMailService mailService;
+    private MailService mailService;
 
     private static final Long MAIL_VERIFY_WAIT_TIME = 600L;
 
@@ -66,7 +68,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
         else{
             log.error("手机号={},不存在！", mobile);
-            throw new MineMineException(ResultEnum.REDIS_NOT_EXISTS);
+            throw new MineMineException(ResultEnum.REDIS_NOT_EXITS);
         }
     }
 
@@ -122,7 +124,7 @@ public class RegisterServiceImpl implements RegisterService {
         UserLogin userLogin = registerRepository.findByEmail(dto.getMail());
         if (userLogin != null) {//唯一性验证
             log.error("邮箱号={},已存在！", dto.getMail());
-            throw new MineMineException(ResultEnum.MAIL_EXITS);
+            throw new MineMineException(MAIL_EXITS);
         }
         String id = KeyUtil.getUniqueKey();
         //获取token,并发送激活邮件
@@ -130,18 +132,17 @@ public class RegisterServiceImpl implements RegisterService {
         try {
             mailService.sendverifyMail(dto.getMail(), token);
         } catch (Exception e) {
-            log.error("向手机号={}发送短信验证码失败！", dto.getMail());
-            throw new MineMineException(ResultEnum.SEND_MAIL_ERROR);
+            log.error("向邮箱={}发送验证页面失败！", dto.getMail());
+            throw new MineMineException(SEND_MAIL_ERROR);
         }
         //信息保存到数据库中
+        userLogin = new UserLogin();
         userLogin.setId(id);
         userLogin.setEmail(dto.getMail());
-        userLogin.setUserName(dto.getUserName());
         userLogin.setPassword(dto.getPasswd());
         registerRepository.save(userLogin);
         //token存入redis,保存10min
         stringRedisTemplate.opsForValue().set(dto.getMail(), token, MAIL_VERIFY_WAIT_TIME, TimeUnit.MINUTES);
-
-        return ResultVOUtil.success();
+        return ResultVOFactory.create(SUCCESS);
     }
 }

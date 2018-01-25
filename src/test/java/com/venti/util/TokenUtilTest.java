@@ -7,7 +7,9 @@ import static org.junit.Assert.*;
 public class TokenUtilTest {
     @Test
     public void token() throws Exception {
-        System.out.println(TokenUtil.token("test"));
+        String token = TokenUtil.token("test");
+        System.out.println(token);
+        System.out.println(BASE64Util.decode(token));
     }
 
 }

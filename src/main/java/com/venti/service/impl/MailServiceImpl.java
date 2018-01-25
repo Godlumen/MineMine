@@ -1,6 +1,6 @@
 package com.venti.service.impl;
 
-import com.venti.service.IMailService;
+import com.venti.service.MailService;
 import com.venti.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service
-public class MailServiceImpl implements IMailService {
+public class MailServiceImpl implements MailService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -130,6 +130,11 @@ public class MailServiceImpl implements IMailService {
         }
     }
 
+    /**
+     * 发送确认邮件
+     * @param to
+     * @param token
+     */
     @Override
     public void sendverifyMail(String to, String token) {
         String subject = Mail.VERIFYMAIL.getSubject();
@@ -140,7 +145,7 @@ public class MailServiceImpl implements IMailService {
 }
 
 enum Mail {
-    VERIFYMAIL("欢迎注册我们的网站", "模板");
+    VERIFYMAIL("欢迎注册我们的网站", "模板URL+TOKEN");
 
     private String subject;
     private String context;

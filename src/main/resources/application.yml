@@ -1,3 +1,4 @@
+#配置Tomcat的路径、端口、和https
 server:
   context-path: "/MineMine"
   port: 8888
@@ -7,6 +8,7 @@ server:
     key-store-type: PKCS12
     key-alias: tomcat
 
+#配置有关Spring的一些参数
 spring:
   jpa:
       show-sql: true
