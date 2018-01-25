@@ -131,24 +131,29 @@ public class MailServiceImpl implements IMailService {
     }
 
     @Override
-    public void sendverifyMail(String to) {
-        String subject = Mail.VERIFYMAIL_SUBJECT.getValue();
-        String content = Mail.VERIFYMAIL_CONTENT.getValue().replace("TOKEN", TokenUtil.token("123"));
+    public void sendverifyMail(String to, String token) {
+        String subject = Mail.VERIFYMAIL.getSubject();
+        String content = Mail.VERIFYMAIL.getContext().replace("TOKEN", token);
         sendHtmlMail(to, subject, content);
     }
 
 }
 
 enum Mail {
-    VERIFYMAIL_SUBJECT("欢迎注册我们的网站"),
-    VERIFYMAIL_CONTENT("");
+    VERIFYMAIL("欢迎注册我们的网站", "模板");
 
-    private String value;
-    private Mail(String value) {
-        this.value = value;
+    private String subject;
+    private String context;
+    private Mail(String subject, String context) {
+        this.subject = subject;
+        this.context = context;
     }
 
-    public String getValue() {
-        return value;
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getContext() {
+        return context;
     }
 }

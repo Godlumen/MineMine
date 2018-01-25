@@ -1,5 +1,6 @@
 package com.venti.controller;
 
+import com.venti.model.dto.UserRegisterDTO;
 import com.venti.model.vo.ResultVO;
 import com.venti.service.RegisterService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ public class RegisterController {
     }
 
     @RequestMapping(value = "/regMail", method = RequestMethod.POST)
-    public void registerByMail(@RequestBody String mail) {
+    public ResultVO registerByMail(@RequestBody UserRegisterDTO dto) {
         log.info("RegisterController--->registerByMail...");
-
+        return registerService.registerByMail(dto);
     }
 }
