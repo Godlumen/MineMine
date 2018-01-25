@@ -62,7 +62,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
         else{
             log.error("手机号={},不存在！", mobile);
-            throw new MineMineException(ResultEnum.REDIS_NOT_EXITS);
+            throw new MineMineException(ResultEnum.REDIS_NOT_EXISTS);
         }
     }
 

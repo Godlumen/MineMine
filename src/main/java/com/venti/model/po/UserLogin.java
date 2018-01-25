@@ -4,12 +4,12 @@ import com.venti.enums.UserStatusEnum;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -45,5 +45,9 @@ public class UserLogin implements Serializable{
     private Date updateTime;
     /** 记录创建时间 **/
     private Date createTime;
+    /** 一个用户具有多个角色 **/
+    @ManyToMany(fetch = FetchType.EAGER)//立即从数据库加载数据
+    @JoinTable(name = "SysUserRole",joinColumns = {@JoinColumn(name = "uid")},inverseJoinColumns = {@JoinColumn(name = "rid")})
+    private List<SysRole> roleList;
 
 }
