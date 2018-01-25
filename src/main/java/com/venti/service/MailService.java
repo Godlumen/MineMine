@@ -1,6 +1,6 @@
 package com.venti.service;
 
-public interface IMailService {
+public interface MailService {
     void sendSimpleMail(String to, String subject, String content);
     void sendHtmlMail(String to, String subject, String content);
     void sendAttachmentsMail(String to, String subject, String content, String filePath);
