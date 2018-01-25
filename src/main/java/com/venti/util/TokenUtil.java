@@ -14,4 +14,7 @@ class MD5Util {
     public static String encode(String token) {
         return token;
     }
+    public static String decode(String token) {
+        return token;
+    }
 }
