@@ -20,6 +20,11 @@ public interface RegisterRepository extends BaseRepository<UserLogin, String> {
     UserLogin findByMobile(String mobile);
 
     /**
+     * 根据邮箱查找
+     */
+    UserLogin findByEmail(String mail);
+
+    /**
      * 根据主键查找
      **/
     UserLogin findById(String id);
