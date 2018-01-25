@@ -22,10 +22,10 @@ public class RegisterController {
         return registerService.sendRegSM(mobile);
     }
 
-    @RequestMapping(value = "/regMob",method = RequestMethod.GET)
-    public ResultVO registerByMobile(@RequestParam("mobile") String mobile,@RequestParam("verifyCode") String verifyCode){
+    @RequestMapping(value = "/regMob",method = RequestMethod.POST)
+    public ResultVO registerByMobile(@RequestBody UserRegisterDTO dto){
         log.info("RegisterController--->registerByMobile...");
-        return registerService.registerByMobile(mobile,verifyCode);
+        return registerService.registerByMobile(dto);
     }
 
     @RequestMapping(value = "/regMail", method = RequestMethod.POST)

@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Configuration
+@Configuration
 public class ShiroConfig {
 
     @Autowired
@@ -60,6 +60,10 @@ public class ShiroConfig {
         return securityManager;
     }
 
+    /**
+     * 身份认证Realm
+     * @return
+     */
     @Bean
     public MyShiroRealm myShiroRealm() {
         MyShiroRealm myShiroRealm = new MyShiroRealm();

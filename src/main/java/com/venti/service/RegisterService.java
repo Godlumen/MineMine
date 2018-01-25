@@ -10,7 +10,7 @@ public interface RegisterService {
     /**
      * 手机号注册
      **/
-    ResultVO registerByMobile(String mobile,String verifyCode);
+    ResultVO registerByMobile(UserRegisterDTO dto);
 
     /**
      * 发送验证短信，获取验证码

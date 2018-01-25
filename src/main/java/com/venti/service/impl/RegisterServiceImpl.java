@@ -39,32 +39,36 @@ public class RegisterServiceImpl implements RegisterService {
 
     /**
      * 手机注册（验证码验证）
-     * @param mobile 手机号
-     * @param verifyCode 验证码
+     *
+     * @param dto
      * @return
      */
     @Override
     @Transactional
-    public ResultVO registerByMobile(String mobile,String verifyCode) {
+    public ResultVO registerByMobile(UserRegisterDTO dto) {
 
+        String mobile = dto.getMobile();
+        String verifyCode = dto.getVerifyCode();
+        String userName = dto.getUserName();
+        String passwd = dto.getPasswd();
         String value = stringRedisTemplate.opsForValue().get(mobile);
         //判断Redis中Key是否存在请求的手机号
-        if(value!=null){
+        if (value != null) {
             UserLogin userLogin = registerRepository.findByMobile(mobile);
             //判断填写验证码是否一致
-            if(value==verifyCode){
+            if (value == verifyCode) {
                 log.info("手机号={},验证成功！", mobile);
                 //修改数据库将用户状态变为已激活
                 userLogin.setStatus(1);
+                userLogin.setUserName(userName);
+                userLogin.setPassword(passwd);
                 registerRepository.save(userLogin);
                 return ResultVOUtil.success();
-            }
-            else{
+            } else {
                 log.error("手机号={},验证失败！", mobile);
                 throw new MineMineException(ResultEnum.VERIFY_FAIL);
             }
-        }
-        else{
+        } else {
             log.error("手机号={},不存在！", mobile);
             throw new MineMineException(ResultEnum.REDIS_NOT_EXISTS);
         }
@@ -72,6 +76,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     /**
      * 发送短信验证码
+     *
      * @param mobile 手机号
      * @return
      */

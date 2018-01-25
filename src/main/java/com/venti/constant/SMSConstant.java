@@ -1,6 +1,6 @@
 package com.venti.constant;
 
-interface SMSConstant {
+public interface SMSConstant {
     /**
      * 短信应用SDK AppID
      **/
