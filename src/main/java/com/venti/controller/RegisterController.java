@@ -4,10 +4,7 @@ import com.venti.model.vo.ResultVO;
 import com.venti.service.RegisterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -28,5 +25,11 @@ public class RegisterController {
     public ResultVO registerByMobile(@RequestParam("mobile") String mobile,@RequestParam("verifyCode") String verifyCode){
         log.info("RegisterController--->registerByMobile...");
         return registerService.registerByMobile(mobile,verifyCode);
+    }
+
+    @RequestMapping(value = "/regMail", method = RequestMethod.POST)
+    public void registerByMail(@RequestBody String mail) {
+        log.info("RegisterController--->registerByMail...");
+
     }
 }
