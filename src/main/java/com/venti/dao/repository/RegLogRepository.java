@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * 注册Dao
  */
-public interface RegisterRepository extends BaseRepository<UserLogin, String> {
+public interface RegLogRepository extends BaseRepository<UserLogin, String> {
 
     /**
      * 分页查找所有记录
@@ -33,5 +33,10 @@ public interface RegisterRepository extends BaseRepository<UserLogin, String> {
      * 添加用户
      **/
     UserLogin save(UserLogin userLogin);
+
+    /**
+     * 根据手机号或邮箱号登录
+     **/
+    UserLogin findByMobileOrEmail(String mobile, String email);
 
 }

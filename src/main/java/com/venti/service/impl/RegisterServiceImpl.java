@@ -2,8 +2,7 @@ package com.venti.service.impl;
 
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.venti.constant.SMSConstant;
-import com.venti.dao.repository.RegisterRepository;
-import com.venti.enums.ResultEnum;
+import com.venti.dao.repository.RegLogRepository;
 import com.venti.exception.MineMineException;
 import com.venti.model.dto.UserRegisterDTO;
 import com.venti.model.po.UserLogin;
@@ -29,7 +28,7 @@ import static com.venti.enums.ResultEnum.*;
 @Slf4j
 public class RegisterServiceImpl implements RegisterService {
     @Autowired
-    private RegisterRepository registerRepository;
+    private RegLogRepository regLogRepository;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -55,22 +54,22 @@ public class RegisterServiceImpl implements RegisterService {
         String value = stringRedisTemplate.opsForValue().get(mobile);
         //判断Redis中Key是否存在请求的手机号
         if (value != null) {
-            UserLogin userLogin = registerRepository.findByMobile(mobile);
+            UserLogin userLogin = regLogRepository.findByMobile(mobile);
             //判断填写验证码是否一致
             if (value == verifyCode) {
                 log.info("手机号={},验证成功！", mobile);
                 //修改数据库将用户状态变为已激活
                 userLogin.setStatus(1);
                 userLogin.setPassword(passwd);
-                registerRepository.save(userLogin);
+                regLogRepository.save(userLogin);
                 return ResultVOUtil.success();
             } else {
                 log.error("手机号={},验证失败！", mobile);
-                throw new MineMineException(ResultEnum.VERIFY_FAIL);
+                throw new MineMineException(VERIFY_FAIL);
             }
         } else {
             log.error("手机号={},不存在！", mobile);
-            throw new MineMineException(ResultEnum.REDIS_NOT_EXISTS);
+            throw new MineMineException(REDIS_NOT_EXISTS);
         }
     }
 
@@ -84,11 +83,11 @@ public class RegisterServiceImpl implements RegisterService {
     @Transactional
     public ResultVO<Map<String, String>> sendRegSM(String mobile) {
 
-        UserLogin userLogin = registerRepository.findByMobile(mobile);
+        UserLogin userLogin = regLogRepository.findByMobile(mobile);
         //验证手机号是否存在
         if (userLogin != null) {
             log.error("手机号={},已存在！", mobile);
-            throw new MineMineException(ResultEnum.MOBILE_EXITS);
+            throw new MineMineException(MOBILE_EXITS);
         }
         //若不存在，发送验证短信
         else {
@@ -105,7 +104,7 @@ public class RegisterServiceImpl implements RegisterService {
                 userLogin.setId(id);
                 userLogin.setMobile(mobile);
                 userLogin.setUserName(mobile);
-                registerRepository.save(userLogin);
+                regLogRepository.save(userLogin);
                 //将验证码存入Redis(60秒过期)
                 stringRedisTemplate.opsForValue().set(mobile, verifyCode, 60, TimeUnit.SECONDS);
                 //返回Json
@@ -116,7 +115,7 @@ public class RegisterServiceImpl implements RegisterService {
             //短信验证码发送失败
             else {
                 log.error("向手机号={}发送短信验证码失败！", mobile);
-                throw new MineMineException(ResultEnum.SMS_ERROR);
+                throw new MineMineException(SMS_ERROR);
             }
         }
     }
@@ -125,7 +124,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Transactional
     public ResultVO registerByMail(UserRegisterDTO dto) {
 
-        UserLogin userLogin = registerRepository.findByEmail(dto.getMail());
+        UserLogin userLogin = regLogRepository.findByEmail(dto.getMail());
         if (userLogin != null) {//唯一性验证
             log.error("邮箱号={},已存在！", dto.getMail());
             throw new MineMineException(MAIL_EXITS);
@@ -144,7 +143,7 @@ public class RegisterServiceImpl implements RegisterService {
         userLogin.setId(id);
         userLogin.setEmail(dto.getMail());
         userLogin.setPassword(dto.getPasswd());
-        registerRepository.save(userLogin);
+        regLogRepository.save(userLogin);
         //token存入redis,保存10min
         stringRedisTemplate.opsForValue().set(dto.getMail(), token, MAIL_VERIFY_WAIT_TIME, TimeUnit.MINUTES);
         return ResultVOFactory.create(SUCCESS);
