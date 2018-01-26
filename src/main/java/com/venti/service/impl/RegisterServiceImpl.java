@@ -51,7 +51,6 @@ public class RegisterServiceImpl implements RegisterService {
 
         String mobile = dto.getMobile();
         String verifyCode = dto.getVerifyCode();
-        String userName = dto.getUserName();
         String passwd = dto.getPasswd();
         String value = stringRedisTemplate.opsForValue().get(mobile);
         //判断Redis中Key是否存在请求的手机号
@@ -62,7 +61,6 @@ public class RegisterServiceImpl implements RegisterService {
                 log.info("手机号={},验证成功！", mobile);
                 //修改数据库将用户状态变为已激活
                 userLogin.setStatus(1);
-                userLogin.setUserName(userName);
                 userLogin.setPassword(passwd);
                 registerRepository.save(userLogin);
                 return ResultVOUtil.success();
@@ -72,7 +70,7 @@ public class RegisterServiceImpl implements RegisterService {
             }
         } else {
             log.error("手机号={},不存在！", mobile);
-            throw new MineMineException(ResultEnum.REDIS_NOT_EXITS);
+            throw new MineMineException(ResultEnum.REDIS_NOT_EXISTS);
         }
     }
 
@@ -106,6 +104,7 @@ public class RegisterServiceImpl implements RegisterService {
                 //将记录存入数据库
                 userLogin.setId(id);
                 userLogin.setMobile(mobile);
+                userLogin.setUserName(mobile);
                 registerRepository.save(userLogin);
                 //将验证码存入Redis(60秒过期)
                 stringRedisTemplate.opsForValue().set(mobile, verifyCode, 60, TimeUnit.SECONDS);
