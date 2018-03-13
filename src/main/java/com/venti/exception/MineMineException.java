@@ -15,7 +15,7 @@ public class MineMineException extends RuntimeException {
     }
 
     public MineMineException(Integer code, String msg) {
+        super(msg);
         this.code = code;
-        this.msg = msg;
     }
 }

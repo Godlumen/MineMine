@@ -3,6 +3,7 @@ package com.venti.controller;
 import com.venti.exception.MineMineException;
 import com.venti.model.dto.UserLoginDTO;
 import com.venti.model.vo.ResultVO;
+import com.venti.shiro.filter.NotAuthc;
 import com.venti.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 public class LogController {
-    //TODO
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResultVO login(@RequestBody UserLoginDTO dto) throws MineMineException {
         log.info("LogController--->login...");
@@ -21,7 +22,7 @@ public class LogController {
         Subject currUser = SecurityUtils.getSubject();
         if (!currUser.isAuthenticated()) {
             try {
-                UsernamePasswordToken token = new UsernamePasswordToken(dto.getMobile(), dto.getPasswd(),dto.getRememberMe());
+                UsernamePasswordToken token = new UsernamePasswordToken(dto.getMobile(), dto.getPasswd());
                 currUser.login(token);
                 resultVO = ResultVOUtil.success();
             } catch (MineMineException e) {
@@ -31,7 +32,6 @@ public class LogController {
         return resultVO;
     }
 
-    //TODO
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ResultVO logout() {
         log.info("LogController--->logout...");

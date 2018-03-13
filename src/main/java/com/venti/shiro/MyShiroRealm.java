@@ -5,6 +5,8 @@ import com.venti.dao.repository.RegLogRepository;
 import com.venti.enums.ResultEnum;
 import com.venti.enums.UserStatusEnum;
 import com.venti.exception.MineMineException;
+import com.venti.model.po.SysPermission;
+import com.venti.model.po.SysRole;
 import com.venti.model.po.UserLogin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -43,12 +45,23 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println("权限认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-        UserLogin user = (UserLogin) SecurityUtils.getSubject().getPrincipal();
-        String id = user.getId();
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-        return null;
+        System.out.println("权限认证方法：MyShiroRealm.doGetAuthenticationInfo()");
+
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        UserLogin user = (UserLogin) principalCollection.getPrimaryPrincipal();
+        System.out.println(user.getMobile());
+        for (SysRole role : user.getRoleList()) {
+            //若角色可用
+            if (role.getStatus() == 1)
+                info.addRole(role.getRole());
+            for (SysPermission permission : role.getPermissionList()) {
+                //若权限可用
+                if (permission.getStatus() == 1)
+                    info.addStringPermission(permission.getPermission());
+            }
+        }
+        return info;
     }
 
     /**
@@ -56,10 +69,10 @@ public class MyShiroRealm extends AuthorizingRealm {
      *
      * @param authenticationToken
      * @return
-     * @throws AuthenticationException
+     * @throws MineMineException
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
 
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
 

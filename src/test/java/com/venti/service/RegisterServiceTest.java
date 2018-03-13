@@ -1,7 +1,9 @@
 package com.venti.service;
 
 import com.venti.Application;
+import com.venti.dao.repository.SysRoleRepository;
 import com.venti.model.dto.UserRegisterDTO;
+import com.venti.model.po.SysRole;
 import com.venti.model.vo.ResultVO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +19,8 @@ import static org.junit.Assert.*;
 public class RegisterServiceTest {
     @Autowired
     RegisterService service;
+    @Autowired
+    private SysRoleRepository sysRoleRepository;
 
     @Test
     public void registerByMobile() throws Exception {
@@ -34,5 +38,11 @@ public class RegisterServiceTest {
         ResultVO result = service.registerByMail(dto);
         Assert.assertEquals((long)result.getCode(), 200);
     }
+
+    @Test
+    public void findRole() throws Exception{
+
+    }
+
 
 }

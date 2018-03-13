@@ -6,6 +6,7 @@ import com.venti.model.vo.ResultVO;
 public class ResultVOUtil {
     /**
      * 响应成功
+     *
      * @param o
      * @return
      */
@@ -23,13 +24,14 @@ public class ResultVOUtil {
 
     /**
      * 响应失败
-     * @param resultEnum
+     *
+     * @param code,msg
      * @return
      */
-    public static ResultVO error(ResultEnum resultEnum) {
+    public static ResultVO error(Integer code, String msg) {
         ResultVO resultVO = new ResultVO();
-        resultVO.setCode(resultEnum.getCode());
-        resultVO.setMsg(resultEnum.getMsg());
+        resultVO.setCode(code);
+        resultVO.setMsg(msg);
         return resultVO;
     }
 }

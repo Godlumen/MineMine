@@ -7,5 +7,4 @@ public class UserLoginDTO {
     private String mobile;
     private String email;
     private String passwd;
-    private Boolean rememberMe = false;
 }

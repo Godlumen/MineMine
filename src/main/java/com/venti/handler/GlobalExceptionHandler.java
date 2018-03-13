@@ -2,21 +2,20 @@ package com.venti.handler;
 
 import com.venti.exception.MineMineException;
 import com.venti.model.vo.ResultVO;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import com.venti.util.ResultVOUtil;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ResponseBody
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MineMineException.class)
-    public ResultVO MineMineExceptionHandler(MineMineException exception) throws RuntimeException{
-        ResultVO resultVO = new ResultVO();
-        resultVO.setCode(exception.getCode());
-        resultVO.setMsg(exception.getMessage());
-        return resultVO;
+    public ResultVO MineMineExceptionHandler(MineMineException exception) throws RuntimeException {
+        return ResultVOUtil.error(exception.getCode(), exception.getMessage());
     }
 
-
+//    @ExceptionHandler(value = Exception.class)
+//    public ResultVO ExceptionHandler(Exception exception) throws Exception {
+//        return ResultVOUtil.error(500, "服务器异常，请联系管理员");
+//    }
 }

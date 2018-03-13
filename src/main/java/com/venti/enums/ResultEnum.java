@@ -13,7 +13,10 @@ public enum ResultEnum {
     SEND_MAIL_ERROR(1006, "邮件发送失败"),
     LOCKED_ACCOUNT(600,"密码输入错误次数大于5次，帐号已经禁止登录"),
     LOGIN_ERROR(601,"登录失败，密码输入错误"),
-    DISABLED_ACCOUNT(602,"此帐号已经设置为禁止登录");
+    DISABLED_ACCOUNT(602,"此帐号已经设置为禁止登录"),
+    NOT_LOGIN(666,"请先登录"),
+    NOT_AUTHZ_ROLES(667,"该用户未被授权此角色"),
+    NOT_AUTHZ_PERMS(668,"该用户未被授权此权限");
 
     private Integer code;
     private String msg;

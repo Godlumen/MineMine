@@ -3,8 +3,11 @@ package com.venti.service.impl;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.venti.constant.SMSConstant;
 import com.venti.dao.repository.RegLogRepository;
+import com.venti.dao.repository.SysRoleRepository;
+import com.venti.enums.UserLevelEnum;
 import com.venti.exception.MineMineException;
 import com.venti.model.dto.UserRegisterDTO;
+import com.venti.model.po.SysRole;
 import com.venti.model.po.UserLogin;
 import com.venti.model.vo.ResultVO;
 import com.venti.service.MailService;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +33,9 @@ import static com.venti.enums.ResultEnum.*;
 public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private RegLogRepository regLogRepository;
+
+    @Autowired
+    private SysRoleRepository sysRoleRepository;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -85,7 +92,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         UserLogin userLogin = regLogRepository.findByMobile(mobile);
         //验证手机号是否存在
-        if (userLogin != null) {
+        if (userLogin != null && userLogin.getStatus()==1) {
             log.error("手机号={},已存在！", mobile);
             throw new MineMineException(MOBILE_EXITS);
         }
@@ -97,13 +104,17 @@ public class RegisterServiceImpl implements RegisterService {
             params.add(verifyCode);
             log.info("向手机号={}发送短信验证码...", mobile);
             SmsSingleSenderResult resultBody = SMSUtil.send2One(SMSConstant.REG_TEMPLATE_ID, params, mobile);
-            //短信验证码发送成功，存入数据库（未激活），验证码存入Redis
+            //短信验证码发送成功，存入数据库（未激活、用户角色），验证码存入Redis
             if (resultBody.result == 0) {
                 log.error("向手机号={}发送短信验证码成功！", mobile);
-                //将记录存入数据库
                 userLogin.setId(id);
                 userLogin.setMobile(mobile);
                 userLogin.setUserName(mobile);
+                //注册默认用户角色：普通用户
+                List<SysRole> roleList = new ArrayList<SysRole>();
+                roleList.add(sysRoleRepository.findById(UserLevelEnum.GENERAL_USER.getCode()));
+                userLogin.setRoleList(roleList);
+                //将记录存入数据库
                 regLogRepository.save(userLogin);
                 //将验证码存入Redis(60秒过期)
                 stringRedisTemplate.opsForValue().set(mobile, verifyCode, 60, TimeUnit.SECONDS);
